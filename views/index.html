@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><%=title %></title>
+    <script src="/script/jquery.js"></script>
+
+    <style>
+        .main{
+            height: 500px;
+            width: 900px;
+            margin: 0 auto;
+            background-color: #76d04b;
+            margin-top: 200px;
+        }
+        .button{
+            width: 100px;
+            height: 50px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main">
+        <h3> 用户名 &nbsp; <input type="text" id = 'username'> </h3>
+        <h3> roomID &nbsp; <input type="text" id= 'roomID'> </h3>
+        <input id='enter' class="button" type="button" value="进入">
+    </div>
+
+</body>
+</html>
+
+<script>
+    $(function () {
+
+        $('#enter').click(function(){
+
+
+
+            var username= $('#username').val().trim();
+            var roomID = $('#roomID').val().trim();
+
+            if((roomID==null&&username==null)||(roomID=='' &&username=='')||(roomID==undefined&&username==undefined)){
+                alert('请填写完整相关信息')
+                return;
+            }
+
+            $('#username').val('')
+            $('#roomID').val('')
+
+            var hostHref = window.location.href;
+            var url = hostHref+'enter/'+'?roomID='+roomID+'&username='+username;
+
+            console.log(url);
+            window.location.href = hostHref+'enter/'+'?roomID='+roomID+'&username='+username;
+
+
+//            var settings = {
+//                "async": true,
+//                "crossDomain": true,
+//                "url": url,
+//                "method": "GET",
+//                "headers": {
+//                    "cache-control": "no-cache",
+//                    "postman-token": "84622d74-9fe9-5015-6930-931f654f8c2b"
+//                }
+//            }
+//
+//            $.ajax(settings).done(function (response) {
+//                console.log(response);
+//                window.location.href = hostHref+'enter/'+'?roomID='+roomID+'&username='+username;
+//            });
+
+        });
+
+    })
+
+</script>
