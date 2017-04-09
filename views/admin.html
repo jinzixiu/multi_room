@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>admin</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/script/jquery.js"></script>
+</head>
+<body>
+<%=title %>
+
+roomID: <input type="text" id='roomID'>
+<br>
+<br>
+
+username: <input type="text" id='username'>
+<br>
+<br>
+
+移除原因：<input type="text" id='msg'>
+<br>
+<br>
+
+移出房间： <button id="btnRemove">移除房间</button>
+<br>
+<br>
+
+<div id='list'>
+sd
+</div>
+
+
+</body>
+
+
+</html>
+
+
+<script>
+    $(function(){
+
+        setInterval(getList,1500);
+
+
+        function getList(){
+            var hostHref = window.location.href;
+            var url = hostHref+'roomlist/';
+
+            var settings = {
+                "async": true,
+                "crossDomain": true,
+                "url": url,
+                "method": "GET",
+                "headers": {
+                    "cache-control": "no-cache",
+                    "postman-token": "84622d74-9fe9-5015-6930-931f654f8c2b"
+                }
+            }
+
+
+            $.ajax(settings).done(function (response) {
+                $('#list').text(JSON.stringify(response))
+            });
+        }
+
+
+
+        $('#btnRemove').click(function(){
+
+            var userName = $('#username').val();
+            var roomID = $('#roomID').val();
+            var msg = $('#msg').val();
+
+            var hostHref = window.location.href;
+            var url = hostHref+'remove/?'+'userName='+userName+'&roomID='+roomID+'&msg='+msg;
+
+            var settings = {
+                "async": true,
+                "crossDomain": true,
+                "url": url,
+                "method": "GET",
+                "headers": {
+                    "cache-control": "no-cache",
+                    "postman-token": "84622d74-9fe9-5015-6930-931f654f8c2b"
+                }
+            }
+
+
+            $.ajax(settings).done(function (response) {
+                $('#list').text(response)
+            });
+
+
+        });
+
+    });
+</script>

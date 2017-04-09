@@ -54,23 +54,37 @@
 </div>
 
 
-<textarea name="message" id="messageInput"></textarea>
+<textarea name="message" id="messageInput" placeholder='按Enter键发送'></textarea>
 <br/>
-按Enter键发送
+
+<button id="sendmsg">发送消息</button>
 <button id="joinOrLeave">退出房间</button>
+
+
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="/script/jquery.js"></script>
 <script>
     $(function () {
 
+
+
         var hostHref = window.location.host;
 
 
-        console.log(users);
+        console.log(hostHref);
 
         // ----------设置昵称-------------
         var userName = '';
+
+        //如果没有userName 会要求设置userName 但是好像业务到不了这里
         while ($('#userName').text().trim() === '') {
             userName = prompt("请设置你的昵称","");
             $('#userName').text(userName);
@@ -84,18 +98,13 @@
 
 
         // ---------创建连接-----------
-
-
         var socket = io(hostHref);
+
 
         // 加入房间
         socket.on('connect', function () {
             socket.emit('join', {userName:userName,roomID:roomID});
         });
-
-
-
-
 
 
         // 监听消息
@@ -111,64 +120,65 @@
         });
 
 
-
-
-
-
-
-
         // 监听系统消息
         socket.on('sys', function (sysMsg, users) {
 
             var message = '<div class="sysMsg">' + sysMsg + '</div>';
             $('#msglog').append(message);
 
-            $('#count').text(users.length);
-            $('#users').text(users);
+            if(users){
+                $('#count').text(users.length);
+                $('#users').text(users);
+            }
+
         });
 
 
-
-
-
-
-
-
-        // 发送消息
+        // 回车键发送消息
         $('#messageInput').keydown(function (e) {
             if (e.which === 13) {
                 e.preventDefault();
-                var msg = $(this).val();
-                $(this).val('');
-
-                socket.send(msg);
+                getMsgAndSend();
             }
         });
 
+        //按钮触发消息
+        $('#sendmsg').click(function () {
+            getMsgAndSend();
+        });
 
+        //发送按钮
+        function getMsgAndSend(){
+            var msg = $('#messageInput').val();
+            $('#messageInput').val('');
 
-
-
-
-
+            if(msg=='') {
+                return;
+            }
+            socket.send(msg);
+        }
 
         // 退出房间
         $('#joinOrLeave').click(function () {
-            if ($(this).text() === '退出房间') {
-                $(this).text('进入房间');
-                socket.emit('leave');
-                var msg = '你已经退出了房间,重新发言请点击"进入房间"';
-                $('#msglog').append('<div class="sysMsg">'+msg+'</div>');
-            } else {
-                $(this).text('退出房间');
-                socket.emit('join', userName);
-            }
+
+            socket.emit('leave');
+            window.location.href = '/';
+
+//            if ($(this).text() === '退出房间') {
+//                $(this).text('进入房间');
+//
+//                var msg = '你已经退出了房间,重新发言请点击"进入房间"';
+//
+//                $('#msglog').append('<div class="sysMsg">'+msg+'</div>');
+//
+//            } else {
+//                $(this).text('退出房间');
+//                socket.emit('join', {userName:userName,roomID:roomID});
+//            }
+
+
 
         });
-
-
-
-
 
     });
 </script>
